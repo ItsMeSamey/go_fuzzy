@@ -1,8 +1,10 @@
 package heuristics
 
+import "fuzzy/common"
+
 // Calculates the Optimal String Alignment (OSA) distance between two strings using a space-optimized approach.
 // Implementation adapted from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
-func LevenshteinOSADistance(a string, b string) int {
+func LevenshteinOSADistance[T common.StringLike](a, b T) int {
   // So the size of v0 and v1 are minimized
   if len(a) < len(b) { a, b = b, a }
 
@@ -19,7 +21,7 @@ func LevenshteinOSADistance(a string, b string) int {
 
   // Fill v1 with first pass of `LevenshteinDistance`
   v1[0] = 1
-  for j := range b {
+  for j := range len(b) {
     increment := 0
     if a[0] != b[j] { increment = 1 }
 

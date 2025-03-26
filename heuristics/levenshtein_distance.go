@@ -1,8 +1,10 @@
 package heuristics
 
+import "fuzzy/common"
+
 // Calculates the Levenshtein(/edit) distance between two strings using a space-optimized approach.
 // Implementation from https://wikipedia.org/wiki/Levenshtein_distance
-func LevenshteinDistance(a string, b string) int {
+func LevenshteinDistance[T common.StringLike](a, b T) int {
   // So the size of v0 and v1 are minimized
   if len(a) < len(b) { a, b = b, a }
 
@@ -19,7 +21,7 @@ func LevenshteinDistance(a string, b string) int {
   // that distance is the number of characters to append to s to make t.
   for i := range len(b)+1 { v0[i] = i }
 
-  for i := range a {
+  for i := range len(a) {
     // calculate v1 (current row distances) from the previous row v0
 
     // first element of v1 is A[i + 1][0]
@@ -27,7 +29,7 @@ func LevenshteinDistance(a string, b string) int {
     v1[0] = i + 1
 
     // fill in the rest of the row
-    for j := range b {
+    for j := range len(b) {
       increment := 0
       if a[i] != b[j] { increment = 1 }
 
