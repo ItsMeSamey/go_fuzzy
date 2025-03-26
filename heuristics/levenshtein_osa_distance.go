@@ -8,10 +8,12 @@ func LevenshteinOSADistance(a string, b string) int {
 
   if len(b) < 2 { return LevenshteinDistance(a, b) }
 
+  // To ensure single allocation
+  buf := make([]int, 3 * (len(b)+1))
   // create two work vectors of integer distances
-  v0 := make([]int, len(b)+1)
-  v1 := make([]int, len(b)+1)
-  v2 := make([]int, len(b)+1)
+  v0 := buf[0 : len(b)+1]
+  v1 := buf[len(b)+1: 2*(len(b)+1)]
+  v2 := buf[2*(len(b)+1): 3*(len(b)+1)]
 
   for i := range len(b)+1 { v0[i] = i }
 

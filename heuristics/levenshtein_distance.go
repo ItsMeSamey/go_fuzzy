@@ -8,9 +8,11 @@ func LevenshteinDistance(a string, b string) int {
 
   if len(b) == 0 { return len(a) }
 
+  // For ensuring single allocation
+  buf := make([]int, 2 * (len(b)+1))
   // create two work vectors of integer distances
-  v0 := make([]int, len(b)+1)
-  v1 := make([]int, len(b)+1)
+  v0 := buf[0 : len(b)+1]
+  v1 := buf[len(b)+1: 2*(len(b)+1)]
 
   // initialize v0 (the previous row of distances)
   // this row is A[0][i]: edit distance from an empty s to t;
