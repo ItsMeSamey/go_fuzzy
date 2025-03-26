@@ -4,9 +4,9 @@ import "fuzzy/common"
 
 // Calculates the Optimal String Alignment (OSA) distance between two strings using a space-optimized approach.
 // Implementation adapted from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
-func LevenshteinOSADistance[T common.StringLike](a, b T) int {
+func LevenshteinOSADistance[A common.StringLike, B common.StringLike](a A, b B) int {
   // So the size of v0 and v1 are minimized
-  if len(a) < len(b) { a, b = b, a }
+  if len(a) < len(b) { return LevenshteinOSADistance(b, a) }
 
   if len(b) < 2 { return LevenshteinDistance(a, b) }
 
