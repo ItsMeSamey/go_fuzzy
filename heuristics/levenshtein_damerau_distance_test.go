@@ -22,7 +22,7 @@ func TestDamerauLevenshteinDistance(t *testing.T) {
 		{"Longer strings", "intention", "execution", 5},
 		{"Different lengths", "abcdef", "azced", 3},
 		{"Transposition", "ca", "ac", 1},
-		{"Longer Transposition", "cxxxa", "axxxc", 1},
+		{"Longer Transposition", "cxa", "axc", 2},
 		{"Another transposition", "abcd", "badc", 2},
 		{"Transposition at start", "abcde", "bacde", 1},
 		{"Two transpositions", "abdcfe", "adbcef", 2},
