@@ -5,13 +5,30 @@ import "fuzzy/common"
 // Calculates the Levenshtein(/edit) distance between two strings using a space-optimized approach.
 // Implementation from https://wikipedia.org/wiki/Levenshtein_distance
 func LevenshteinDistance[A common.StringLike, B common.StringLike](a A, b B) int {
-  // So the size of v0 and v1 are minimized
+  // Ensure b is shortest, so length of v0 and v1 are minimized
   if len(a) < len(b) { return LevenshteinDistance(b, a) }
 
+  // Trim common prefix
+  for len(b) > 0 && a[0] == b[0] {
+    a = a[1:]
+    b = b[1:]
+  }
+
+  // Trim common suffix
+  for len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
+    a = a[:len(a)-1]
+    b = b[:len(b)-1]
+  }
+
+  return simpleLevenshteinDistance(a, b)
+}
+
+func simpleLevenshteinDistance[A common.StringLike, B common.StringLike](a A, b B) int {
   if len(b) == 0 { return len(a) }
 
   // For ensuring single allocation
   buf := make([]int, 2 * (len(b)+1))
+
   // create two work vectors of integer distances
   v0 := buf[0 : len(b)+1]
   v1 := buf[len(b)+1: 2*(len(b)+1)]
