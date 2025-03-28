@@ -9,6 +9,10 @@ func Abs[T Number](num T) T {
   return num
 }
 
+type FloatType interface {
+  float32 | float64
+}
+
 type StringLike interface {
   string | []byte
 }
