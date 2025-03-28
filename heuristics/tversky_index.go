@@ -2,7 +2,7 @@ package heuristics
 
 import "fuzzy/common"
 
-// Uses MultiSet Calculates the Tversky index for the given strings.
+// Uses MultiSet, Calculates the Tversky index for the given strings.
 // This may not follow triangle inequality, depending on the values of alpha and beta.
 //
 // Time Complexity: O(n + m)
@@ -15,7 +15,7 @@ func TverskyIndexCharacter[F common.FloatType, A common.StringLike, B common.Str
   return F(intersection) / (F(intersection) + alpha * F(uint(len(a)) - intersection) + beta * F(uint(len(b)) - intersection))
 }
 
-// Uses Bigram Set Calculates the Tversky index for the given strings.
+// Uses Bigram, Set Calculates the Tversky index for the given strings.
 // This may not follow triangle inequality, depending on the values of alpha and beta.
 //
 // Time Complexity: O(n + m)

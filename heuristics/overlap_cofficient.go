@@ -2,7 +2,7 @@ package heuristics
 
 import "fuzzy/common"
 
-// Uses MultiSet Calculates the Overlap Coefficient for the given strings.
+// Uses MultiSet, Calculates the Overlap Coefficient for the given strings.
 // This Does not follow triangle inequality
 //
 // Time Complexity: O(n + m)
@@ -16,7 +16,7 @@ func OverlapCoefficientCharacter[F common.FloatType, A common.StringLike, B comm
   return F(common.IntersectionCharacterCount(a, b)) / F(min(len(a), len(b)))
 }
 
-// Uses Bigram Set Calculates the Overlap Coefficient for the given strings.
+// Uses Bigram, Set Calculates the Overlap Coefficient for the given strings.
 // This Does not follow triangle inequality
 //
 // Time Complexity: O(n + m)

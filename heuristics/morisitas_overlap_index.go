@@ -2,7 +2,7 @@ package heuristics
 
 import "fuzzy/common"
 
-// Uses MultiSet Calculates the Morisitas Overlap Coefficient for the given strings.
+// Calculates the Morisitas Overlap Coefficient for the given strings using MultiSet.
 // This May? not follow triangle inequality
 // Implementation from https://en.wikipedia.org/wiki/Morisita%27s_overlap_index
 //
@@ -29,7 +29,7 @@ func MorisitasOverlapCoefficient[F common.FloatType, A common.StringLike, B comm
   return numerator / (d_b + d_b)
 }
 
-// Uses MultiSet Calculates the Horns modification of the Morisitas Overlap Coefficient for the given strings.
+// Calculates the Horns modification of the Morisitas Overlap Coefficient for the given strings using MultiSet.
 // This May? not follow triangle inequality
 // Implementation from https://en.wikipedia.org/wiki/Morisita%27s_overlap_index
 //
