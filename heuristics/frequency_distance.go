@@ -1,9 +1,7 @@
 package heuristics
 
 import (
-	"fuzzy/common"
-
-	"github.com/blizzy78/varnamelen"
+  "fuzzy/common"
 )
 
 func FrequencyDistanceTrim[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
@@ -25,17 +23,6 @@ func FrequencyDistanceTrim[F common.FloatType, A common.StringLike, B common.Str
   return FrequencyDistance[F](a, b)
 }
 
-
-// type indexTaker struct {
-//   index uint32
-//   taker uint32
-// }
-//
-// type indexValue struct {
-//   filledTill int
-//   array []indexTaker
-// }
-
 func FrequencyDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
   if len(a) < len(b) { return FrequencyDistance[F](b, a) }
 
@@ -46,16 +33,6 @@ func FrequencyDistance[F common.FloatType, A common.StringLike, B common.StringL
   for i := range len(b) { fb[b[i]] = append(fb[b[i]], uint32(i)) }
 
   distance := F(0)
-  for i := range len(a) {
-    if fb[a[i]].filledTill == len(fb[a[i]].array) {
-      distance += 1
-      continue
-    }
-    idx := fb[a[i]].filledTill
-    fb[a[i]].filledTill += 1
-    fb[a[i]][idx].taker = uint32(i)
-    distance += F(common.Abs(int(fb[a[i]][0].index) - i)) / F(len(a) - 1)
-  }
 
   return distance
 }
