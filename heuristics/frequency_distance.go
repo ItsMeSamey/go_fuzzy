@@ -101,12 +101,17 @@ func FrequencyDistance[F common.FloatType, A common.StringLike, B common.StringL
         }
       }
 
-      for j := range len(ib) {
-        distance += F(common.Abs(int(ia[start + j]) - int(ib[j]))) / F(len(a) - 1)
+      c_start = common.Abs(int(ia[start]) - int(ib[0]))
+      c_end = common.Abs(int(ia[end]) - int(ib[len(ib)-1]))
+      partial_distance := F(0)
+      for j := 1; j < len(ib) - 1; j += 1 {
+        partial_distance += F(min(common.Abs(int(ia[start + j]) - int(ib[j]) - c_start), common.Abs(int(ia[start + j]) - int(ib[j]) - c_end)))
       }
+      partial_distance += F(c_start + c_end)
+      distance += partial_distance / F(len(a) - 1)
     }
   }
 
-  return distance
+  return distance / F(len(a) + len(b))
 }
 
