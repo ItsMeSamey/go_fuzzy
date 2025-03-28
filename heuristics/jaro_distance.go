@@ -54,28 +54,43 @@ func JaroDistance[F common.FloatType, A common.StringLike, B common.StringLike](
   return (F(matches)/F(len(a)) + F(matches)/F(len(b)) + (F(matches) - F(transpositions))/F(matches)) / 3
 }
 
-// JaroWinklerDistance calculates the Jaro-Winkler distance between two strings by
+// Calculates the Jaro-Winkler distance between two strings by
 // giving more favorable ratings to strings that match from the beginning and the end.
-func JaroWinklerLikeDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B, l F) F {
+func JaroWinklerDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B, prefix_l F, prefix_limit int) F {
   jaro := JaroDistance[F](a, b)
-
-  if jaro < 0.7 { return jaro }
 
   // Calculate the length of the matching prefix (up to max 4 characters).
   prefix := 0
-  for len(a) > 0 && len(b) > 0 && a[0] == b[0] {
-    prefix++
+  for prefix < prefix_limit && len(a) > 0 && len(b) > 0 && a[0] == b[0] {
+    prefix += 1
     a = a[1:]
     b = b[1:]
   }
 
+  // Calculate the Jaro-Winkler distance.
+  return jaro + F(prefix) * prefix_l * (1-jaro)
+}
+
+// JaroWinklerDistance, except this one matches from the end as well.
+func JaroWinklerLikeDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) F {
+  jaro := JaroDistance[F](a, b)
+
+  // Calculate the length of the matching prefix (up to max 4 characters).
+  prefix := 0
+  for len(a) > 0 && len(b) > 0 && a[0] == b[0] {
+    prefix += 1
+    a = a[1:]
+    b = b[1:]
+  }
+
+  suffix := 0
   for len(a) > 0 && len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
-    prefix++
+    suffix += 1
     a = a[:len(a)-1]
     b = b[:len(b)-1]
   }
 
   // Calculate the Jaro-Winkler distance.
-  return jaro + F(prefix) * l * (1-jaro)
+  return jaro + F(prefix) * prefix_l * (1-jaro) + F(suffix) * suffix_l * (1-jaro)
 }
 
