@@ -5,25 +5,30 @@ import (
   "sort"
 )
 
-func FrequencyDistanceTrim[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
-  // Ensure b is shortest, for trimming
-  if len(a) < len(b) { return FrequencyDistanceTrim[F](b, a) }
+// This probably makes no difference as algo has linear time complexity anyways
+// func FrequencyDistanceTrim[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
+//   // Ensure b is shortest, for trimming
+//   if len(a) < len(b) { return FrequencyDistanceTrim[F](b, a) }
+//
+//   // Trim common prefix
+//   for len(b) > 0 && a[0] == b[0] {
+//     a = a[1:]
+//     b = b[1:]
+//   }
+//
+//   // Trim common suffix
+//   for len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
+//     a = a[:len(a)-1]
+//     b = b[:len(b)-1]
+//   }
+//
+//   return FrequencyDistance[F](a, b)
+// }
 
-  // Trim common prefix
-  for len(b) > 0 && a[0] == b[0] {
-    a = a[1:]
-    b = b[1:]
-  }
-
-  // Trim common suffix
-  for len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
-    a = a[:len(a)-1]
-    b = b[:len(b)-1]
-  }
-
-  return FrequencyDistance[F](a, b)
-}
-
+// A similarity measure that i made up
+//
+// Time complexity: O(n+m) = m + 2*n + 256*(log2(max(m, n)))
+// Space complexity: O(n+m) = (m + n) * sizeof(uint32)
 func FrequencyDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
   if len(a) < len(b) { return FrequencyDistance[F](b, a) }
   if len(b) == 0 { return F(len(a)) }
