@@ -4,9 +4,12 @@ import "fuzzy/common"
 
 // Calculates the Optimal String Alignment (OSA) distance between two strings using a space-optimized approach.
 // Implementation adapted from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
-func LevenshteinOSADistanceTrim[A common.StringLike, B common.StringLike](a A, b B) int {
+//
+// Time Complexity: O(n*m)
+// Space Complexity: O(3 * min(n,m))
+func LevenshteinOSADistance[A common.StringLike, B common.StringLike](a A, b B) int {
   // Ensure b is shortest, so length of v0 and v1 are minimized
-  if len(a) < len(b) { return LevenshteinOSADistanceTrim(b, a) }
+  if len(a) < len(b) { return LevenshteinOSADistance(b, a) }
 
   // Trim common prefix
   for len(b) > 0 && a[0] == b[0] {
@@ -24,10 +27,14 @@ func LevenshteinOSADistanceTrim[A common.StringLike, B common.StringLike](a A, b
 }
 
 // Calculates the Optimal String Alignment (OSA) distance between two strings using a space-optimized approach.
+// Use `LevenshteinOSADistance` unless you have a specific reason to use this version.
 // Implementation adapted from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
-func LevenshteinOSADistance[A common.StringLike, B common.StringLike](a A, b B) int {
+//
+// Time Complexity: O(n*m)
+// Space Complexity: O(3 * min(n,m)) 
+func LevenshteinOSADistanceNoTrim[A common.StringLike, B common.StringLike](a A, b B) int {
   // Ensure b is shortest, so length of v0 and v1 are minimized
-  if len(a) < len(b) { return LevenshteinOSADistance(b, a) }
+  if len(a) < len(b) { return LevenshteinOSADistanceNoTrim(b, a) }
 
   return simpleLevenshteinOSADistance(a, b)
 }

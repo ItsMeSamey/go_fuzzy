@@ -4,9 +4,12 @@ import "fuzzy/common"
 
 // Calculates the Length of Longest_Common_Subsequence between two strings using a space-optimized approach.
 // Implementation adapted from https://wikipedia.org/wiki/Longest_common_subsequence
-func LCSLengthTrim[A common.StringLike, B common.StringLike](a A, b B) int {
+//
+// Time Complexity: O(n*m)
+// Space Complexity: O(2 * min(n,m))
+func LCSLength[A common.StringLike, B common.StringLike](a A, b B) int {
   // We ensure that b is shorter, minimizing size of v0 and v1
-  if len(a) < len(b) { return LCSLengthTrim(b, a) }
+  if len(a) < len(b) { return LCSLength(b, a) }
 
   // Length of Longest common suffix + common prefix
   start_end_length := 0
@@ -29,10 +32,14 @@ func LCSLengthTrim[A common.StringLike, B common.StringLike](a A, b B) int {
 }
 
 // Calculates the Length of Longest_Common_Subsequence between two strings using a space-optimized approach.
+// Use `LCSLength` unless you have a specific reason to use this version.
 // Implementation adapted from https://wikipedia.org/wiki/Longest_common_subsequence
-func LCSLength[A common.StringLike, B common.StringLike](a A, b B) int {
+//
+// Time Complexity: O(n*m)
+// Space Complexity: O(2 * min(n,m))
+func LCSLengthNoTrim[A common.StringLike, B common.StringLike](a A, b B) int {
   // We ensure that b is shorter, minimizing size of v0 and v1
-  if len(a) < len(b) { return LCSLength(b, a) }
+  if len(a) < len(b) { return LCSLengthNoTrim(b, a) }
 
   return simpleLCSLength(a, b)
 }
