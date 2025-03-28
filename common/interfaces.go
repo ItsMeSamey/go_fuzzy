@@ -13,4 +13,3 @@ type StringLike interface {
   string | []byte
 }
 
-
