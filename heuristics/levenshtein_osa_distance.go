@@ -47,7 +47,7 @@ func simpleLevenshteinOSADistance[A common.StringLike, B common.StringLike](a A,
   buf := make([]int, 3 * (len(b)+1))
 
   // create two work vectors of integer distances
-  v0 := buf[0 : len(b)+1]
+  v0 := buf[0: len(b)+1]
   v1 := buf[len(b)+1: 2*(len(b)+1)]
   v2 := buf[2*(len(b)+1): 3*(len(b)+1)]
 

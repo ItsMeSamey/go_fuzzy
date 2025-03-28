@@ -46,7 +46,7 @@ func simpleLevenshteinDistance[A common.StringLike, B common.StringLike](a A, b 
   buf := make([]int, 2 * (len(b)+1))
 
   // create two work vectors of integer distances
-  v0 := buf[0 : len(b)+1]
+  v0 := buf[0: len(b)+1]
   v1 := buf[len(b)+1: 2*(len(b)+1)]
 
   // initialize v0 (the previous row of distances)
