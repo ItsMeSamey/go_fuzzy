@@ -3,6 +3,7 @@ package heuristics
 import "fuzzy/common"
 
 // Uses MultiSet Calculates the Dice-Sorensen coefficient for the given strings.
+// This Does not follow triangle inequality
 //
 // Time Complexity: O(n + m)
 // Space Complexity: O(1) = 256 * sizeof(int)
@@ -16,6 +17,7 @@ func DiceSorensenCoefficientCharacter[F common.FloatType, A common.StringLike, B
 }
 
 // Uses Bigram Set Calculates the Dice-Sorensen coefficient for the given strings.
+// This Does not follow triangle inequality
 //
 // Time Complexity: O(n + m)
 // Space Complexity: O(1) = 8kb
