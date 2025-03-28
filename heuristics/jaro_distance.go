@@ -61,7 +61,7 @@ func JaroWinklerDistance[F common.FloatType, A common.StringLike, B common.Strin
 
   // Calculate the length of the matching prefix (up to max 4 characters).
   prefix := 0
-  for prefix < prefix_limit && len(a) > 0 && len(b) > 0 && a[0] == b[0] {
+  for prefix != prefix_limit && len(a) > 0 && len(b) > 0 && a[0] == b[0] {
     prefix += 1
     a = a[1:]
     b = b[1:]
@@ -77,14 +77,14 @@ func JaroWinklerLikeDistance[F common.FloatType, A common.StringLike, B common.S
 
   // Calculate the length of the matching prefix (up to max 4 characters).
   prefix := 0
-  for len(a) > 0 && len(b) > 0 && a[0] == b[0] {
+  for prefix != prefix_limit && len(a) > 0 && len(b) > 0 && a[0] == b[0] {
     prefix += 1
     a = a[1:]
     b = b[1:]
   }
 
   suffix := 0
-  for len(a) > 0 && len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
+  for suffix != suffix_limit && len(a) > 0 && len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
     suffix += 1
     a = a[:len(a)-1]
     b = b[:len(b)-1]

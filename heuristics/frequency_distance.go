@@ -2,6 +2,7 @@ package heuristics
 
 import (
   "fuzzy/common"
+  "sort"
 )
 
 func FrequencyDistanceTrim[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
@@ -25,6 +26,11 @@ func FrequencyDistanceTrim[F common.FloatType, A common.StringLike, B common.Str
 
 func FrequencyDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
   if len(a) < len(b) { return FrequencyDistance[F](b, a) }
+  if len(b) == 0 { return F(len(a)) }
+  if len(a) == 1 {
+    if a[0] == b[0] { return 0 }
+    return F(1)
+  }
 
   var fa [256][]uint32
   for i := range len(a) { fa[a[i]] = append(fa[a[i]], uint32(i)) }
@@ -33,6 +39,73 @@ func FrequencyDistance[F common.FloatType, A common.StringLike, B common.StringL
   for i := range len(b) { fb[b[i]] = append(fb[b[i]], uint32(i)) }
 
   distance := F(0)
+  for i := range 256 {
+    ia := fa[i]
+    ib := fb[i]
+
+    if len(ia) == len(ib) {
+      for j := range len(ia) {
+        distance += F(common.Abs(int(ia[j]) - int(ib[j]))) / F(len(a) - 1)
+      }
+      continue
+    }
+
+    if len(ia) < len(ib) { ia, ib = ib, ia }
+    if len(ib) == 0 {
+      distance += F(len(ia))
+      continue
+    } else if len(ib) == 1 {
+      distance += F(len(ia) - 1)
+      idx := sort.Search(len(ia), func(i int) bool { return ia[i] >= ib[0] })
+
+      if idx == len(ia) || idx == len(ia) - 1 {
+        distance += F(common.Abs(int(ia[len(ia) - 1]) - int(ib[0]))) / F(len(a) - 1)
+      } else {
+        distance += F(min(
+          common.Abs(int(ia[idx]) - int(ib[0])),
+          common.Abs(int(ia[idx+1]) - int(ib[0])),
+        )) / F(len(a) - 1)
+      }
+    } else {
+      distance += F(len(ia) - len(ib))
+      start := sort.Search(len(ia), func(i int) bool { return ia[i] >= ib[0] })
+      end := sort.Search(len(ia), func(i int) bool { return ia[i] >= ib[len(ib)-1] })
+
+      c_start := 0
+      c_end := 0
+      if end >= len(ia) - 1 {
+        end = len(ia) - 1
+        start = end - len(ib)
+      } else if start == 0 {
+        end = len(ib)
+      } else {
+        c_start = min(common.Abs(int(ia[start]) - int(ib[0])), common.Abs(int(ia[start + 1]) - int(ib[0])))
+        c_end = min(common.Abs(int(ia[end]) - int(ib[len(ib)-1])), common.Abs(int(ia[end + 1]) - int(ib[len(ib)-1])))
+      }
+
+      for end - start < len(ib) {
+        if c_start > c_end {
+          end += 1
+          if end == len(ia) - 1 {
+            start = end - len(ib)
+            break
+          }
+          c_end = min(common.Abs(int(ia[end]) - int(ib[len(ib)-1])), common.Abs(int(ia[end + 1]) - int(ib[len(ib)-1])))
+        } else {
+          start -= 1
+          if start == 0 {
+            end = len(ib)
+            break
+          }
+          c_start = min(common.Abs(int(ia[start]) - int(ib[0])), common.Abs(int(ia[start + 1]) - int(ib[0])))
+        }
+      }
+
+      for j := range len(ib) {
+        distance += F(common.Abs(int(ia[start + j]) - int(ib[j]))) / F(len(a) - 1)
+      }
+    }
+  }
 
   return distance
 }
