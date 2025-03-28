@@ -4,9 +4,9 @@ import "fuzzy/common"
 
 // Calculates the Damerau-Levenshtein distance between two strings.
 // Implementation from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
-func DamerauLevenshteinDistance[A common.StringLike, B common.StringLike](a A, b B) int {
+func DamerauLevenshteinDistanceTrim[A common.StringLike, B common.StringLike](a A, b B) int {
   // Ensure b is shortest, so length of v0 and v1 are minimized
-  if len(a) < len(b) { return DamerauLevenshteinDistance(b, a) }
+  if len(a) < len(b) { return DamerauLevenshteinDistanceTrim(b, a) }
 
   // Trim common prefix
   for len(b) > 0 && a[0] == b[0] {
@@ -19,6 +19,15 @@ func DamerauLevenshteinDistance[A common.StringLike, B common.StringLike](a A, b
     a = a[:len(a)-1]
     b = b[:len(b)-1]
   }
+
+  return simpleDamerauLevenshteinDistance(a, b)
+}
+
+// Calculates the Damerau-Levenshtein distance between two strings.
+// Implementation from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
+func DamerauLevenshteinDistance[A common.StringLike, B common.StringLike](a A, b B) int {
+  // Ensure b is shortest, so length of v0 and v1 are minimized
+  if len(a) < len(b) { return DamerauLevenshteinDistance(b, a) }
 
   return simpleDamerauLevenshteinDistance(a, b)
 }
