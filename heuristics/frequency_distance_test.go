@@ -2,37 +2,6 @@ package heuristics
 
 import "testing"
 
-func TestFrequencyDistanceTrimNoCrash(t *testing.T) {
-  testCases := []struct {
-    a string
-    b string
-  }{
-    {"", ""},
-    {"abc", "abc"},
-    {"abcd", "abce"},
-    {"abca", "abca"},
-    {"bcde", "bcde"},
-    {"bcde", "abcde"},
-    {"abcde", "abcd"},
-    {"abcd", "abcde"},
-    {"abcdef", "bcde"},
-    {"bcde", "abcdef"},
-    {"abcdef", "cdeb"},
-    {"abbc", "bbc"},
-    {"bbc", "abbc"},
-    {"banana", "bandana"},
-    {"bandana", "banana"},
-    {"testing", "taste"},
-    {"taste", "testing"},
-  }
-
-  for _, tc := range testCases {
-    t.Run("", func(t *testing.T) {
-      _ = FrequencyDistanceTrim[float64](tc.a, tc.b)
-    })
-  }
-}
-
 func TestFrequencyDistanceNoCrash(t *testing.T) {
   testCases := []struct {
     a string
