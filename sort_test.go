@@ -1,13 +1,13 @@
 package gofuzzy
 
 import (
-	"fmt"
-	"testing"
+  "fmt"
+  "testing"
 
-	"fuzzy/heuristics"
-	"fuzzy/transformers"
+  "fuzzy/heuristics"
+  "fuzzy/transformers"
 
-	"golang.org/x/text/transform"
+  "golang.org/x/text/transform"
 )
 
 func TestReadmeSort(t *testing.T) {
@@ -16,7 +16,7 @@ func TestReadmeSort(t *testing.T) {
 
   sorter := Sorter[float64, string, string]{
     Scorer:    Scorer[float64, string, string]{
-      ScoreFn: heuristics.Wrap[float64, string, string](heuristics.LevenshteinSimilarityPercentage),
+      ScoreFn: heuristics.Wrap[float64](heuristics.FrequencySimilarity),
       Transformer: nil,
     },
     Threshold: 0.6, // Only include strings with similarity >= 0.6
@@ -25,6 +25,7 @@ func TestReadmeSort(t *testing.T) {
   fmt.Println("Unsorted:", candidates)
   count := sorter.Sort(candidates, target)
   fmt.Println("Sorted (and filtered):", candidates[:count]) // Only the first 'count' elements are sorted, rest are still shuffled
+  fmt.Println("Score: ", sorter.Score(candidates, target))
 }
 
 func TestReadmeScorer(t *testing.T) {
@@ -32,7 +33,7 @@ func TestReadmeScorer(t *testing.T) {
   query := "Hello World"
 
   scorer := Scorer[float64, string, string]{
-    ScoreFn: heuristics.Wrap[float64, string, string](heuristics.LevenshteinSimilarityPercentage),
+    ScoreFn: heuristics.Wrap[float64](heuristics.LevenshteinSimilarityPercentage),
     Transformer: transform.Chain(transformers.UnicodeNormalize(), transformers.Lowercase()), // Should always UnicodeNormalize before Lowercase
   }
 

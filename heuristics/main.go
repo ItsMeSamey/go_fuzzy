@@ -76,8 +76,8 @@ func JaroSimilarity[F common.FloatType, A common.StringLike, B common.StringLike
 // Space Complexity: O(n+m)
 //
 // `limit` of -1 means no limit
-func GenJaroWinklerSimilarity[F common.FloatType, A common.StringLike, B common.StringLike](prefix_l F, prefix_limit int) func(a A, b B) F {
-  return func(a A, b B) F {
+func GenJaroWinklerSimilarity[F common.FloatType](prefix_l F, prefix_limit int) func(a, b []byte) F {
+  return func(a, b []byte) F {
     return algorithms.JaroWinklerDistance(a, b, prefix_l, prefix_limit)
   }
 }
@@ -88,8 +88,8 @@ func GenJaroWinklerSimilarity[F common.FloatType, A common.StringLike, B common.
 // Space Complexity: O(n+m)
 //
 // `limit` of -1 means no limit
-func GenJaroWinklerSimilarityBidirectional[F common.FloatType, A common.StringLike, B common.StringLike](prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a A, b B) F {
-  return func(a A, b B) F {
+func GenJaroWinklerSimilarityBidirectional[F common.FloatType](prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a, b []byte) F {
+  return func(a, b []byte) F {
     return algorithms.JaroWinklerDistanceBidirectional(a, b, prefix_l, prefix_limit, suffix_l, suffix_limit)
   }
 }
@@ -177,8 +177,8 @@ func OverlapCoefficientBigram[F common.FloatType, A common.StringLike, B common.
 //
 // Time Complexity: O(n + m)
 // Space Complexity: O(1) = 256 * sizeof(int)
-func GenTverskyIndex[F common.FloatType, A common.StringLike, B common.StringLike](alpha F, beta F) func(a A, b B) F {
-  return func(a A, b B) F {
+func GenTverskyIndex[F common.FloatType](alpha F, beta F) func(a, b []byte) F {
+  return func(a, b []byte) F {
     return algorithms.TverskyIndexCharacter(a, b, alpha, beta)
   }
 }
@@ -187,19 +187,19 @@ func GenTverskyIndex[F common.FloatType, A common.StringLike, B common.StringLik
 //
 // Time Complexity: O(n + m)
 // Space Complexity: O(1) = 8kb
-func GenTverskyIndexBigram[F common.FloatType, A common.StringLike, B common.StringLike](alpha F, beta F) func(a A, b B) F {
-  return func(a A, b B) F {
+func GenTverskyIndexBigram[F common.FloatType](alpha F, beta F) func(a, b []byte) F {
+  return func(a, b []byte) F {
     return algorithms.TverskyIndexBigram(a, b, alpha, beta)
   }
 }
 
 // Every function that does not start with `Gen` must be wrepped befote being used (to make it non-generic)
-func Wrap[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F) func(a A, b B) F { return f }
+func Wrap[F common.FloatType](f func(a, b []byte) F) func(a, b []byte) F { return f }
 
-func WrapTrim[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a A, b B) F {
+func WrapTrim[F common.FloatType](f func(a, b []byte) F, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a, b []byte) F {
   if !(common.Abs(prefix_l) <= 1) { panic("prefix_l must be between -1 and 1") }
   if !(common.Abs(suffix_l) <= 1) { panic("suffix_l must be between -1 and 1") }
-  return func(a A, b B) F {
+  return func(a, b []byte) F {
     min_len := min(len(a), len(b))
     pre := 0
     for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
@@ -213,9 +213,9 @@ func WrapTrim[F common.FloatType, A common.StringLike, B common.StringLike](f fu
   }
 }
 
-func WrapTrimStart[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, prefix_l F, prefix_limit int) func(a A, b B) F {
+func WrapTrimStart[F common.FloatType](f func(a, b []byte) F, prefix_l F, prefix_limit int) func(a, b []byte) F {
   if !(common.Abs(prefix_l) <= 1) { panic("prefix_l must be between -1 and 1") }
-  return func(a A, b B) F {
+  return func(a, b []byte) F {
     min_len := min(len(a), len(b))
     pre := 0
     for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
@@ -225,9 +225,9 @@ func WrapTrimStart[F common.FloatType, A common.StringLike, B common.StringLike]
   }
 }
 
-func WrapTrimEnd[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, suffix_l F, suffix_limit int) func(a A, b B) F {
+func WrapTrimEnd[F common.FloatType](f func(a, b []byte) F, suffix_l F, suffix_limit int) func(a, b []byte) F {
   if !(common.Abs(suffix_l) <= 1) { panic("suffix_l must be between -1 and 1") }
-  return func(a A, b B) F {
+  return func(a, b []byte) F {
     min_len := min(len(a), len(b))
     suf := 0
     for suf != suffix_limit && suf < min(len(a), len(b)) && a[len(a)-1-suf] == b[len(b)-1-suf] { suf += 1 }

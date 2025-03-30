@@ -10,10 +10,18 @@ import (
 
 type Scorer[F common.FloatType, A common.StringLike, B common.StringLike] struct {
   // Returns a score Between 0 and 1 for the given pair of A and B.
-  ScoreFn func(a A, b B) F
+  ScoreFn func(a, b []byte) F
 
   // Transformer
   Transformer transform.Transformer
+}
+
+func transformStringLike[A common.StringLike](t transform.Transformer, a A) []byte {
+  bytea := []byte(a)
+  if t == nil { return bytea }
+  out, _, err := transform.Bytes(t, bytea)
+  if err != nil { return bytea }
+  return out
 }
 
 type AccessorInterface[A common.StringLike] interface {
@@ -24,16 +32,18 @@ type AccessorInterface[A common.StringLike] interface {
 }
 
 // Give an array of scores for all the elements in the `accessor` w.r.t. the `target`.
-func (sorter Scorer[F, A, B]) ScoreAny(accessor AccessorInterface[A], target B, ) (out []F) {
+func (sorter Scorer[F, A, B]) ScoreAny(accessor AccessorInterface[A], target B) (out []F) {
   out = make([]F, accessor.Len())
-  for i := range accessor.Len() { out[i] = sorter.ScoreFn(accessor.Get(i), target) }
+  byteTarget := transformStringLike(sorter.Transformer, target)
+  for i := range accessor.Len() { out[i] = sorter.ScoreFn(transformStringLike(sorter.Transformer, accessor.Get(i)), byteTarget) }
   return
 }
 
 // Give an array of scores for all the elements in the `array` w.r.t. the `target`.
 func (sorter Scorer[F, A, B]) Score(array []A, target B) (out []F) {
   out = make([]F, len(array))
-  for i, a := range array { out[i] = sorter.ScoreFn(a, target) }
+  byteTarget := transformStringLike(sorter.Transformer, target)
+  for i, a := range array { out[i] = sorter.ScoreFn(transformStringLike(sorter.Transformer, a), byteTarget) }
   return
 }
 
@@ -58,7 +68,7 @@ type sortAnyType[F common.FloatType, A common.StringLike] struct {
 }
 func (s *sortAnyType[F, A]) Len() int { return s.len }
 func (s *sortAnyType[F, A]) SetLen(i int) { s.len = i }
-func (s *sortAnyType[F, A]) Less(i, j int) bool { return s.scores[i] < s.scores[j] }
+func (s *sortAnyType[F, A]) Less(i, j int) bool { return s.scores[i] > s.scores[j] }
 func (s *sortAnyType[F, A]) Swap(i, j int) {
   s.swapper.Swap(i, j)
   s.scores[i], s.scores[j] = s.scores[j], s.scores[i]
@@ -81,7 +91,7 @@ type sortType[F common.FloatType, A common.StringLike] struct {
 }
 func (s *sortType[F, A]) Len() int { return s.len }
 func (s *sortType[F, A]) SetLen(i int) { s.len = i }
-func (s *sortType[F, A]) Less(i, j int) bool { return s.scores[i] < s.scores[j] }
+func (s *sortType[F, A]) Less(i, j int) bool { return s.scores[i] > s.scores[j] }
 func (s *sortType[F, A]) Swap(i, j int) {
   s.array[i], s.array[j] = s.array[j], s.array[i]
   s.scores[i], s.scores[j] = s.scores[j], s.scores[i]
@@ -107,7 +117,7 @@ type sortInterface[F common.FloatType, A common.StringLike] interface {
 func (sorter Sorter[F, A, B]) sort(data sortInterface[F, A]) int {
   below := 0
 
-  if sorter.Threshold == 0 {
+  if sorter.Threshold != 0 {
     for below < data.Len() && data.Score(below) >= sorter.Threshold { below += 1 }
     for i := below; i < data.Len(); i += 1 {
       if data.Score(i) < sorter.Threshold { continue }

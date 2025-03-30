@@ -40,13 +40,13 @@ func main() {
 
   sorter := fuzzy.Sorter[float32, string, string]{
     Scorer:    fuzzy.Scorer[float32, string, string]{
-      ScoreFn: heuristics.Wrap[float32, string, string](heuristics.LevenshteinSimilarityPercentage),
+      ScoreFn: heuristics.Wrap[float64, string, string](heuristics.FrequencySimilarity),
       Transformer: nil,
     },
     Threshold: 0.6, // Only include strings with similarity >= 0.6
   }
 
-  fmt.Println("Unsorted:", candidates)
+  fmt.Println("Unsorted:", candidates) // output: ["appel", "aple"]
   count := sorter.Sort(candidates, target)
   fmt.Println("Sorted (and filtered):", candidates[:count]) // Only the first 'count' elements are sorted, rest are still shuffled
 }
@@ -56,6 +56,10 @@ func main() {
 * A struct that holds a scoring function (`ScoreFn`) and a `transform.Transformer`.
     The scoring function calculates the similarity score between two strings.
     The transformer is used to transform strings, before calculating the score.
+
+> [!NOTE]
+> Although all the provided functions output values from the range `[0, 1]`, you can create your own implementation that goes beyond this range.
+> EG: You can use "github.com/ItsMeSamey/go_fuzzy/heuristics/algorithms".LCSLength as a score, and Threshold as cut-off.
 
 Example: Calculating LevenshteinSimilarityPercentage for an array of strings
 
