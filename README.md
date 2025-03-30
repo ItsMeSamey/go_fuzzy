@@ -30,7 +30,7 @@ import (
   "fmt"
   "strings"
 
-  fuzzy "github.com/ItsMeSamey/go_fuzzy"
+  "github.com/ItsMeSamey/go_fuzzy"
   "github.com/ItsMeSamey/go_fuzzy/heuristics"
 )
 
@@ -66,7 +66,7 @@ import (
   "fmt"
 
   "golang.org/x/text/transform"
-  fuzzy "github.com/ItsMeSamey/go_fuzzy"
+  "github.com/ItsMeSamey/go_fuzzy"
   "github.com/ItsMeSamey/go_fuzzy/heuristics"
   "github.com/ItsMeSamey/go_fuzzy/transformers"
 )
