@@ -38,11 +38,9 @@ func main() {
   target := "apple"
   candidates := []string{"aple", "application", "orange", "banana", "appel"}
 
-  sorter := fuzzy.Sorter[float32, string, string]{
-    Scorer:    fuzzy.Scorer[float32, string, string]{
-      ScoreFn: heuristics.Wrap[float32](heuristics.FrequencySimilarity),
-      Transformer: nil,
-    },
+  sorter := fuzzy.Sorter[float32, string, string]{} 
+  sorter := Sorter[float64, string, string]{
+    // Scorer: Scorer[float64, string, string]{...}, // Defaults to FrequencySimilarity and Lowercase Transformer
     Threshold: 0.6, // Only include strings with similarity >= 0.6
   }
 

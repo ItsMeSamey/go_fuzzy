@@ -5,6 +5,7 @@ import (
 
   "github.com/ItsMeSamey/go_fuzzy/common"
   "github.com/ItsMeSamey/go_fuzzy/heuristics"
+  "github.com/ItsMeSamey/go_fuzzy/transformers"
 
   "golang.org/x/text/transform"
 )
@@ -71,6 +72,7 @@ func (sorter Scorer[F, A, B]) ScoreAny(accessor AccessorInterface[A], target B) 
   byteTarget := transformStringLike(sorter.Transformer, target)
   if sorter.ScoreFn == nil {
     sorter.ScoreFn = heuristics.Wrap[F](heuristics.FrequencySimilarity)
+    sorter.Transformer = transformers.Lowercase()
   }
   for i := range accessor.Len() { out[i] = sorter.ScoreFn(transformStringLike(sorter.Transformer, accessor.Get(i)), byteTarget) }
   return

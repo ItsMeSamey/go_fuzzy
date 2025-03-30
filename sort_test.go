@@ -15,10 +15,6 @@ func TestReadmeSort(t *testing.T) {
   candidates := []string{"aple", "application", "orange", "banana", "appel"}
 
   sorter := Sorter[float64, string, string]{
-    Scorer:    Scorer[float64, string, string]{
-      ScoreFn: heuristics.Wrap[float64](heuristics.FrequencySimilarity),
-      Transformer: nil,
-    },
     Threshold: 0.6, // Only include strings with similarity >= 0.6
   }
 
