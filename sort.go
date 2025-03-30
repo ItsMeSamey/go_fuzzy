@@ -42,6 +42,7 @@ type Sorter[F common.FloatType, A common.StringLike, B common.StringLike] struct
   Scorer[F, A, B]
 
   // A value Between 0 and 1 that determines the threshold for the sort.
+  // When this is 0, no threshold is applied
   Threshold F
 }
 
