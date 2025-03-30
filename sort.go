@@ -4,6 +4,7 @@ import (
   "sort"
 
   "github.com/ItsMeSamey/go_fuzzy/common"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics"
 
   "golang.org/x/text/transform"
 )
@@ -68,6 +69,9 @@ type Scorer[F common.FloatType, A common.StringLike, B common.StringLike] struct
 func (sorter Scorer[F, A, B]) ScoreAny(accessor AccessorInterface[A], target B) (out []F) {
   out = make([]F, accessor.Len())
   byteTarget := transformStringLike(sorter.Transformer, target)
+  if sorter.ScoreFn == nil {
+    sorter.ScoreFn = heuristics.Wrap[F](heuristics.FrequencySimilarity)
+  }
   for i := range accessor.Len() { out[i] = sorter.ScoreFn(transformStringLike(sorter.Transformer, accessor.Get(i)), byteTarget) }
   return
 }
