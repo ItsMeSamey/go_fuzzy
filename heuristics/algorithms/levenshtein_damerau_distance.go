@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Calculates the Damerau-Levenshtein distance between two strings.
 // Implementation from https://wikipedia.org/wiki/Damerau-Levenshtein_distance

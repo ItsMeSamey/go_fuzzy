@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // JaroDistance calculates the Jaro distance between two strings.
 //

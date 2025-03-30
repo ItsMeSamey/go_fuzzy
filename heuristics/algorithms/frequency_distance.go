@@ -1,7 +1,7 @@
 package algorithms
 
 import (
-  "fuzzy/common"
+  "github.com/ItsMeSamey/go_fuzzy/common"
   "sort"
 )
 

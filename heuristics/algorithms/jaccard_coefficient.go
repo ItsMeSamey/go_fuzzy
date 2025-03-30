@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Uses MultiSet, Calculates the Jaccard coefficient for the given strings.
 //

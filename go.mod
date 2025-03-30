@@ -1,4 +1,4 @@
-module fuzzy
+module github.com/ItsMeSamey/go_fuzzy
 
 go 1.24.1
 

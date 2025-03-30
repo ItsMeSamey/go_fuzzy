@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Uses MultiSet, Calculates the Overlap Coefficient for the given strings.
 // This Does not follow triangle inequality

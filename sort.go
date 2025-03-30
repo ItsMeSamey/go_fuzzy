@@ -1,4 +1,4 @@
-package gofuzzy
+package fuzzy
 
 import (
   "sort"

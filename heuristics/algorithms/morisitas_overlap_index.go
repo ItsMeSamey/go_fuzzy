@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Calculates the Morisitas Overlap Coefficient for the given strings using MultiSet.
 // This May? not follow triangle inequality

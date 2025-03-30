@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Calculates the Optimal String Alignment (OSA) distance between two strings using a space-optimized approach.
 // Implementation adapted from https://wikipedia.org/wiki/Damerau-Levenshtein_distance

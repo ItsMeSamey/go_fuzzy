@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Uses MultiSet, Calculates the Tversky index for the given strings.
 // This may not follow triangle inequality, depending on the values of alpha and beta.

@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Calculates the Levenshtein(/edit) distance between two strings using a space-optimized approach.
 // Implementation from https://wikipedia.org/wiki/Levenshtein_distance

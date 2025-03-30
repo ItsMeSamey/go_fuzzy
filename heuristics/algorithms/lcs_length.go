@@ -1,6 +1,6 @@
 package algorithms
 
-import "fuzzy/common"
+import "github.com/ItsMeSamey/go_fuzzy/common"
 
 // Calculates the Length of Longest_Common_Subsequence between two strings using a space-optimized approach.
 // Implementation adapted from https://wikipedia.org/wiki/Longest_common_subsequence

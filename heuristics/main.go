@@ -1,8 +1,8 @@
 package heuristics
 
 import (
-  "fuzzy/common"
-  "fuzzy/heuristics/algorithms"
+  "github.com/ItsMeSamey/go_fuzzy/common"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics/algorithms"
 )
 
 // Uses MultiSet, Calculates the Dice-Sorensen coefficient for the given strings.
