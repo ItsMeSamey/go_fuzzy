@@ -38,9 +38,9 @@ func main() {
   target := "apple"
   candidates := []string{"aple", "application", "orange", "banana", "appel"}
 
-  sorter := fuzzy.Sorter[float64, string, string]{
-    Scorer:    fuzzy.Scorer[float64, string, string]{
-      ScoreFn: heuristics.Wrap(heuristics.LevenshteinSimilarityPercentage),
+  sorter := fuzzy.Sorter[float32, string, string]{
+    Scorer:    fuzzy.Scorer[float32, string, string]{
+      ScoreFn: heuristics.Wrap[float32, string, string](heuristics.LevenshteinSimilarityPercentage),
       Transformer: nil,
     },
     Threshold: 0.6, // Only include strings with similarity >= 0.6
@@ -74,7 +74,7 @@ func main() {
   query := "Hello World"
 
   scorer := fuzzy.Scorer[float64, string, string]{
-    ScoreFn: heuristics.Wrap(heuristics.LevenshteinSimilarityPercentage[float64, string, string]),
+    ScoreFn: heuristics.Wrap[float64, string, string](heuristics.LevenshteinSimilarityPercentage),
     Transformer: transform.Chain(transformers.UnicodeNormalize(), transformers.Lowercase()), // Should always UnicodeNormalize before Lowercase
   }
 
