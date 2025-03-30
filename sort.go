@@ -3,7 +3,7 @@ package fuzzy
 import (
   "sort"
 
-  "fuzzy/common"
+  "github.com/ItsMeSamey/go_fuzzy/common"
 
   "golang.org/x/text/transform"
 )

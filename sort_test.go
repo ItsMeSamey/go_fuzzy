@@ -4,8 +4,8 @@ import (
   "fmt"
   "testing"
 
-  "fuzzy/heuristics"
-  "fuzzy/transformers"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics"
+  "github.com/ItsMeSamey/go_fuzzy/transformers"
 
   "golang.org/x/text/transform"
 )
