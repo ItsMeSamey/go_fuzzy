@@ -24,30 +24,31 @@ go get github.com/ItsMeSamey/go_fuzzy
 * A struct that uses a `Scorer` (see next section) to sort a collection of strings based on their similarity to a target string, with an optional threshold.
 
 Example: Sorting Strings by LevenshteinSimilarity
+
 ```go
 import (
-	"fmt"
-	"strings"
+  "fmt"
+  "strings"
 
-    fuzzy "github.com/ItsMeSamey/go_fuzzy"
-    "github.com/ItsMeSamey/go_fuzzy/heuristics"
+  fuzzy "github.com/ItsMeSamey/go_fuzzy"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics"
 )
 
 func main() {
-	target := "apple"
-	candidates := []string{"aple", "application", "orange", "banana", "appel"}
+  target := "apple"
+  candidates := []string{"aple", "application", "orange", "banana", "appel"}
 
-	sorter := fuzzy.Sorter[float64, string, string]{
-		Scorer:    fuzzy.Scorer[float64, string, string]{
-            ScoreFn: heuristics.Wrap(heuristics.LevenshteinSimilarityPercentage),
-            Transformer: nil,
-        },
-		Threshold: 0.6, // Only include strings with similarity >= 0.6
-	}
+  sorter := fuzzy.Sorter[float64, string, string]{
+    Scorer:    fuzzy.Scorer[float64, string, string]{
+      ScoreFn: heuristics.Wrap(heuristics.LevenshteinSimilarityPercentage),
+      Transformer: nil,
+    },
+    Threshold: 0.6, // Only include strings with similarity >= 0.6
+  }
 
-	fmt.Println("Unsorted:", candidates)
-	count := sorter.Sort(candidates, target)
-	fmt.Println("Sorted (and filtered):", candidates[:count]) // Only the first 'count' elements are sorted, rest are still shuffled
+  fmt.Println("Unsorted:", candidates)
+  count := sorter.Sort(candidates, target)
+  fmt.Println("Sorted (and filtered):", candidates[:count]) // Only the first 'count' elements are sorted, rest are still shuffled
 }
 ```
 
@@ -57,50 +58,52 @@ func main() {
     The transformer is used to transform strings, before calculating the score.
 
 Example: Calculating LevenshteinSimilarityPercentage for an array of strings
+
 ```go
 import (
-	"fmt"
+  "fmt"
 
-    "golang.org/x/text/transform"
-    fuzzy "github.com/ItsMeSamey/go_fuzzy"
-    "github.com/ItsMeSamey/go_fuzzy/heuristics"
-    "github.com/ItsMeSamey/go_fuzzy/transformers"
+  "golang.org/x/text/transform"
+  fuzzy "github.com/ItsMeSamey/go_fuzzy"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics"
+  "github.com/ItsMeSamey/go_fuzzy/transformers"
 )
 
 func main() {
-	strs := []string{"hello world", "Hello fuzzy world", "Hello World 2"}
-	querry := "helo wrLd"
+  strs := []string{"hello world", "Hello fuzzy world", "Hello World 2"}
+  query := "Hello World"
 
-    scorer := fuzzy.Scorer[float64, string, string]{
-        ScoreFn: heuristics.Wrap(heuristics.LevenshteinSimilarityPercentage[float64, string, string]),
-        Transformer: transform.Chain(transformers.UnicodeNormalize(), transformers.Lowercase()), // Should always UnicodeNormalize befor Lowercase
-    }
+  scorer := fuzzy.Scorer[float64, string, string]{
+    ScoreFn: heuristics.Wrap(heuristics.LevenshteinSimilarityPercentage[float64, string, string]),
+    Transformer: transform.Chain(transformers.UnicodeNormalize(), transformers.Lowercase()), // Should always UnicodeNormalize before Lowercase
+  }
 
-    var scores []float64 = scorer.Score(strs, querry)
-    fmt.Println(scores)
+  var scores []float64 = scorer.Score(strs, query)
+  fmt.Println(scores)
 }
 ```
 
 ### common.StringLike
 * This interface represents types that can be treated as strings, currently `string` and `[]byte`, so atgument can be any of these types.
+
 Example: Calculating Sørensen–Dice Coefficient
 
 ```go
 import (
-    "fmt"
-    "github.com/ItsMeSamey/go_fuzzy/heuristics"
+  "fmt"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics"
 )
 
 func main() {
-    string1 := "hello world"
-    string2 := "hello world 2"
-    byteArray1 := []byte("hello byte world")
+  string1 := "hello world"
+  string2 := "hello world 2"
+  byteArray1 := []byte("hello byte world")
 
-    var score32 float32 = heuristics.DiceSorensenCoefficient[float32](string1, string2)
-    fmt.Printf("Dice-Sorensen Similarity: %f\\n", score32)
+  var score32 float32 = heuristics.DiceSorensenCoefficient[float32](string1, string2)
+  fmt.Printf("Dice-Sorensen Similarity: %f\n", score32)
 
-    var score64 float64 = heuristics.DiceSorensenCoefficient[float64](byteArray1, string2)
-    fmt.Printf("Dice-Sorensen Similarity: %f\\n", score64)
+  var score64 float64 = heuristics.DiceSorensenCoefficient[float64](byteArray1, string2)
+  fmt.Printf("Dice-Sorensen Similarity: %f\n", score64)
 }
 ```
 
