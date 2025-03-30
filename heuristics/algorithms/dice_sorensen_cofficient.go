@@ -1,4 +1,4 @@
-package heuristics
+package algorithms
 
 import "fuzzy/common"
 
