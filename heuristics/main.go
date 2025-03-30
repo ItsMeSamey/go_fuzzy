@@ -193,3 +193,41 @@ func GenTverskyIndexBigram[F common.FloatType, A common.StringLike, B common.Str
   }
 }
 
+// Every function that does not start with `Gen` must be wrepped befote being used (to make it non-generic)
+func Wrap[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F) func(a A, b B) F { return f }
+
+func WrapTrim[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a A, b B) F {
+  return func(a A, b B) F {
+    pre := 0
+    for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
+    suf := 0
+    for suf != suffix_limit && suf < min(len(a), len(b)) && a[len(a)-1-suf] == b[len(b)-1-suf] { suf += 1 }
+
+    out := f(a[pre:len(a)-suf], b[pre:len(b)-suf])
+    min_len := min(len(a), len(b))
+    return F(pre)*prefix_l/F(min_len) + out*F(pre+suf)/F(min_len) + F(suf)*suffix_l/F(min_len)
+  }
+}
+
+func WrapTrimStart[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, prefix_l F, prefix_limit int) func(a A, b B) F {
+  return func(a A, b B) F {
+    pre := 0
+    for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
+
+    out := f(a[pre:], b[pre:])
+    min_len := min(len(a), len(b))
+    return F(pre)*prefix_l/F(min_len) + out*F(pre)/F(min_len)
+  }
+}
+
+func WrapTrimEnd[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, suffix_l F, suffix_limit int) func(a A, b B) F {
+  return func(a A, b B) F {
+    suf := 0
+    for suf != suffix_limit && suf < min(len(a), len(b)) && a[len(a)-1-suf] == b[len(b)-1-suf] { suf += 1 }
+
+    out := f(a[:len(a)-suf], b[:len(b)-suf])
+    min_len := min(len(a), len(b))
+    return out*F(suf)/F(min_len) + F(suf)*suffix_l/F(min_len)
+  }
+}
+
