@@ -4,9 +4,7 @@ import "fuzzy/common"
 
 // JaroDistance calculates the Jaro distance between two strings.
 //
-// The Jaro distance is a measure of similarity between two strings. It is
-// defined as:
-//
+// The Jaro distance is a measure of similarity between two strings using the following formula:
 // jaro_distance = 1/3 * (m/|s1| + m/|s2| + (m - t)/m)
 func JaroDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B) F {
   if len(a) < len(b) { return JaroDistance[F](b, a) }
@@ -72,7 +70,7 @@ func JaroWinklerDistance[F common.FloatType, A common.StringLike, B common.Strin
 }
 
 // JaroWinklerDistance, except this one matches from the end as well.
-func JaroWinklerLikeDistance[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) F {
+func JaroWinklerDistanceBidirectional[F common.FloatType, A common.StringLike, B common.StringLike](a A, b B, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) F {
   jaro := JaroDistance[F](a, b)
 
   // Calculate the length of the matching prefix (up to max 4 characters).

@@ -11,35 +11,6 @@ func LevenshteinDistance[A common.StringLike, B common.StringLike](a A, b B) int
   // Ensure b is shortest, so length of v0 and v1 are minimized
   if len(a) < len(b) { return LevenshteinDistance(b, a) }
 
-  // Trim common prefix
-  for len(b) > 0 && a[0] == b[0] {
-    a = a[1:]
-    b = b[1:]
-  }
-
-  // Trim common suffix
-  for len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
-    a = a[:len(a)-1]
-    b = b[:len(b)-1]
-  }
-
-  return simpleLevenshteinDistance(a, b)
-}
-
-// Calculates the Levenshtein(/edit) distance between two strings using a space-optimized approach.
-// Use `LevenshteinDistance` unless you have a specific reason to use this version.
-// Implementation from https://wikipedia.org/wiki/Levenshtein_distance
-//
-// Time Complexity: O(n*m)
-// Space Complexity: O(2 * min(n,m))
-func LevenshteinDistanceNoTrim[A common.StringLike, B common.StringLike](a A, b B) int {
-  // Ensure b is shortest, so length of v0 and v1 are minimized
-  if len(a) < len(b) { return LevenshteinDistanceNoTrim(b, a) }
-
-  return simpleLevenshteinDistance(a, b)
-}
-
-func simpleLevenshteinDistance[A common.StringLike, B common.StringLike](a A, b B) int {
   if len(b) == 0 { return len(a) }
 
   // For ensuring single allocation

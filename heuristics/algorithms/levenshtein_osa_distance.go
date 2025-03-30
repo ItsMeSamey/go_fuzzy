@@ -11,37 +11,8 @@ func LevenshteinOSADistance[A common.StringLike, B common.StringLike](a A, b B) 
   // Ensure b is shortest, so length of v0 and v1 are minimized
   if len(a) < len(b) { return LevenshteinOSADistance(b, a) }
 
-  // Trim common prefix
-  for len(b) > 0 && a[0] == b[0] {
-    a = a[1:]
-    b = b[1:]
-  }
-
-  // Trim common suffix
-  for len(b) > 0 && a[len(a)-1] == b[len(b)-1] {
-    a = a[:len(a)-1]
-    b = b[:len(b)-1]
-  }
-
-  return simpleLevenshteinOSADistance(a, b)
-}
-
-// Calculates the Optimal String Alignment (OSA) distance between two strings using a space-optimized approach.
-// Use `LevenshteinOSADistance` unless you have a specific reason to use this version.
-// Implementation adapted from https://wikipedia.org/wiki/Damerau-Levenshtein_distance
-//
-// Time Complexity: O(n*m)
-// Space Complexity: O(3 * min(n,m)) 
-func LevenshteinOSADistanceNoTrim[A common.StringLike, B common.StringLike](a A, b B) int {
-  // Ensure b is shortest, so length of v0 and v1 are minimized
-  if len(a) < len(b) { return LevenshteinOSADistanceNoTrim(b, a) }
-
-  return simpleLevenshteinOSADistance(a, b)
-}
-
-func simpleLevenshteinOSADistance[A common.StringLike, B common.StringLike](a A, b B) int {
   // No exchanges can take place if smallest string is shorter than 2 characters
-  if len(b) < 2 { return simpleLevenshteinDistance(a, b) }
+  if len(b) < 2 { return LevenshteinDistance(a, b) }
 
   // To ensure single allocation
   buf := make([]int, 3 * (len(b)+1))
