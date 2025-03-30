@@ -40,7 +40,7 @@ func main() {
 
   sorter := fuzzy.Sorter[float32, string, string]{
     Scorer:    fuzzy.Scorer[float32, string, string]{
-      ScoreFn: heuristics.Wrap[float64](heuristics.FrequencySimilarity),
+      ScoreFn: heuristics.Wrap[float32](heuristics.FrequencySimilarity),
       Transformer: nil,
     },
     Threshold: 0.6, // Only include strings with similarity >= 0.6
