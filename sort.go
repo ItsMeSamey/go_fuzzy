@@ -105,18 +105,20 @@ type sortInterface[F common.FloatType, A common.StringLike] interface {
 }
 func (sorter Sorter[F, A, B]) sort(data sortInterface[F, A]) int {
   below := 0
-  for below < data.Len() && data.Score(below) >= sorter.Threshold { below += 1 }
 
-  for i := below; i < data.Len(); i += 1 {
-    if data.Score(i) < sorter.Threshold { continue }
-    data.Swap(i, below)
-    below += 1
+  if sorter.Threshold == 0 {
+    for below < data.Len() && data.Score(below) >= sorter.Threshold { below += 1 }
+    for i := below; i < data.Len(); i += 1 {
+      if data.Score(i) < sorter.Threshold { continue }
+      data.Swap(i, below)
+      below += 1
+    }
+    data.SetLen(below)
+  } else {
+    below = data.Len()
   }
 
-  data.SetLen(below)
-
   sort.Sort(data)
-
   return below
 }
 
