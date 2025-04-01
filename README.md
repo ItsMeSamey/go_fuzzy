@@ -23,7 +23,7 @@ go get github.com/ItsMeSamey/go_fuzzy
 ### fuzzy.Sorter
 * A struct that uses a `Scorer` (see next section) to sort a collection of strings based on their similarity to a target string, with an optional threshold.
 
-Example: Simple Sorting Strings by LevenshteinSimilarity
+Simple Example: Sorting []string
 
 ```go
 import (
@@ -31,7 +31,6 @@ import (
   "strings"
 
   "github.com/ItsMeSamey/go_fuzzy"
-  "github.com/ItsMeSamey/go_fuzzy/heuristics"
 )
 
 func main() {
@@ -39,7 +38,11 @@ func main() {
   candidates := []string{"aple", "application", "orange", "banana", "appel"}
 
   sorter := fuzzy.Sorter[float32, string, string]{
-    // Scorer: Scorer[float64, string, string]{...}, // Defaults to FrequencySimilarity and Lowercase Transformer
+    // Scorer: Scorer[float64, string, string]{
+      // ScoreFn: Defaults to FrequencySimilarity and Lowercase Transformer
+      // if no ScoreFn is specified, transformer defaults to transformers.Lowercase()
+      // to prevent this, explicitlly specify a ScoreFn (non null), and explicitlly set the transformer to nil
+    //}, 
     Threshold: 0.6, // Only include strings with similarity >= 0.6
   }
 
@@ -50,7 +53,7 @@ func main() {
 }
 ```
 
-Example: Sorting array of structs by LevenshteinSimilarity
+Advanced Example: Sorting array of user data types
 
 ```go
 import (
@@ -58,7 +61,6 @@ import (
   "strings"
 
   "github.com/ItsMeSamey/go_fuzzy"
-  "github.com/ItsMeSamey/go_fuzzy/heuristics"
 )
 
 type Product struct {
@@ -119,7 +121,7 @@ func main() {
   query := "Hello World"
 
   scorer := fuzzy.Scorer[float64, string, string]{
-    ScoreFn: heuristics.Wrap[float64](heuristics.LevenshteinSimilarityPercentage),
+    ScoreFn: heuristics.LevenshteinSimilarityPercentage[float64, string, string],
     Transformer: transform.Chain(transformers.UnicodeNormalize(), transformers.Lowercase()), // Should always UnicodeNormalize before Lowercase
   }
 
