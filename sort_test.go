@@ -49,3 +49,26 @@ func TestReadmeStringLike(t *testing.T) {
   fmt.Printf("Dice-Sorensen Similarity: %f\n", score64)
 }
 
+func TestReadmeSortAny(t *testing.T) {
+  type Product struct {
+    Name string
+    Price float32
+  }
+
+  target := "apple"
+  candidates := []Product{
+    {Name: "aple", Price: 10},
+    {Name: "application", Price: 20},
+    {Name: "orange", Price: 30},
+    {Name: "banana", Price: 40},
+    {Name: "appel", Price: 50},
+  }
+
+  sorter := Sorter[float32, string, string]{} 
+
+  fmt.Println("Unsorted:", candidates)
+  // Only the first 'count' elements are sorted, rest are still shuffled
+  count := sorter.SortAny(ToSwapper(candidates, func(p Product) string { return p.Name }), target)
+  fmt.Println("Sorted (and filtered):", candidates[:count]) // output: [{appel 50} {aple 10} {application 20} {orange 30} {banana 40}]
+}
+

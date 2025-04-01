@@ -23,7 +23,7 @@ go get github.com/ItsMeSamey/go_fuzzy
 ### fuzzy.Sorter
 * A struct that uses a `Scorer` (see next section) to sort a collection of strings based on their similarity to a target string, with an optional threshold.
 
-Example: Sorting Strings by LevenshteinSimilarity
+Example: Simple Sorting Strings by LevenshteinSimilarity
 
 ```go
 import (
@@ -38,15 +38,50 @@ func main() {
   target := "apple"
   candidates := []string{"aple", "application", "orange", "banana", "appel"}
 
-  sorter := fuzzy.Sorter[float32, string, string]{} 
-  sorter := Sorter[float64, string, string]{
+  sorter := fuzzy.Sorter[float32, string, string]{
     // Scorer: Scorer[float64, string, string]{...}, // Defaults to FrequencySimilarity and Lowercase Transformer
     Threshold: 0.6, // Only include strings with similarity >= 0.6
   }
 
-  fmt.Println("Unsorted:", candidates) // output: ["appel", "aple"]
+  fmt.Println("Unsorted:", candidates)
+  // Only the first 'count' elements are sorted, rest are still shuffled
   count := sorter.Sort(candidates, target)
-  fmt.Println("Sorted (and filtered):", candidates[:count]) // Only the first 'count' elements are sorted, rest are still shuffled
+  fmt.Println("Sorted (and filtered):", candidates[:count]) // output: ["appel", "aple"]
+}
+```
+
+Example: Sorting array of structs by LevenshteinSimilarity
+
+```go
+import (
+  "fmt"
+  "strings"
+
+  "github.com/ItsMeSamey/go_fuzzy"
+  "github.com/ItsMeSamey/go_fuzzy/heuristics"
+)
+
+type Product struct {
+  Name string
+  Price float32
+}
+
+func main() {
+  target := "apple"
+  candidates := []Product{
+    {Name: "aple", Price: 10},
+    {Name: "application", Price: 20},
+    {Name: "orange", Price: 30},
+    {Name: "banana", Price: 40},
+    {Name: "appel", Price: 50},
+  }
+
+  sorter := fuzzy.Sorter[float32, string, string]{} 
+
+  fmt.Println("Unsorted:", candidates)
+  // Only the first 'count' elements are sorted, rest are still shuffled
+  count := sorter.SortAny(fuzzy.ToSwapper(candidates, func(p Product) string { return p.Name }), target)
+  fmt.Println("Sorted (and filtered):", candidates[:count]) // output: [{appel 50} {aple 10} {application 20} {orange 30} {banana 40}]
 }
 ```
 
