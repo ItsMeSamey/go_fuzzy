@@ -63,25 +63,33 @@ import (
 
 type Product struct {
   Name string
-  Price float32
+  Company string
+  Description string
 }
 
 func main() {
   target := "apple"
   candidates := []Product{
-    {Name: "aple", Price: 10},
-    {Name: "application", Price: 20},
-    {Name: "orange", Price: 30},
-    {Name: "banana", Price: 40},
-    {Name: "appel", Price: 50},
+    {Name: "aple", Company: "Misspelling Corp", Description: "A misspelling of apple"},
+    {Name: "appel", Company: "Misspelling Corp", Description: "Another misspelling of apple"},
+    {Name: "application", Company: "Light Corp", Description: "A software application"},
+    {Name: "orange", Company: "Fruit Corp", Description: "A fruit"},
+    {Name: "banana", Company: "Fruit Corp", Description: "A fruit"},
+    {Name: "iphone", Company: "Apple", Description: "A smartphone"},
   }
 
-  sorter := fuzzy.Sorter[float32, string, string]{} 
+  sorter := fuzzy.Sorter[float32, string, string]{Threshold: 0.8} 
 
   fmt.Println("Unsorted:", candidates)
-  // Only the first 'count' elements are sorted, rest are still shuffled
+  // Note: `SortAny` for single key
   count := sorter.SortAny(fuzzy.ToSwapper(candidates, func(p Product) string { return p.Name }), target)
-  fmt.Println("Sorted (and filtered):", candidates[:count]) // output: [{appel 50} {aple 10} {application 20} {orange 30} {banana 40}]
+  fmt.Println("Sorted (and filtered):", candidates[:count])
+  // output: [{appel Misspelling Corp Another misspelling of apple} {aple Misspelling Corp A misspelling of apple}]
+
+  // Note: `SortAnyArr` for multiple keys (best match is used)
+  count = sorter.SortAnyArr(fuzzy.ToSwapper(candidates, func(p Product) []string { return []string{p.Name, p.Company, p.Description} }), target)
+  fmt.Println("Sorted (and filtered):", candidates[:count])
+  // output: [{iphone Apple A smartphone} {appel Misspelling Corp Another misspelling of apple} {aple Misspelling Corp A misspelling of apple}]
 }
 ```
 
