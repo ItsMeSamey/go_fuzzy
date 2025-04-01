@@ -29,7 +29,7 @@ func TestReadmeScorer(t *testing.T) {
   query := "Hello World"
 
   scorer := Scorer[float64, string, string]{
-    ScoreFn: heuristics.Wrap[float64](heuristics.LevenshteinSimilarityPercentage),
+    ScoreFn: heuristics.LevenshteinSimilarityPercentage[float64, string, string],
     Transformer: transform.Chain(transformers.UnicodeNormalize(), transformers.Lowercase()), // Should always UnicodeNormalize before Lowercase
   }
 

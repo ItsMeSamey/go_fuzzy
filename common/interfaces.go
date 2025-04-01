@@ -16,6 +16,10 @@ type StringLike interface {
   string | []byte
 }
 
+type StringOrStringArrayLike interface {
+  StringLike | []string | [][]byte
+}
+
 type ByteWriter struct {
   Buf []byte
   At  int

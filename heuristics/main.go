@@ -193,13 +193,37 @@ func GenTverskyIndexBigram[F common.FloatType](alpha F, beta F) func(a, b []byte
   }
 }
 
-// Every function that does not start with `Gen` must be wrepped befote being used (to make it non-generic)
-func Wrap[F common.FloatType](f func(a, b []byte) F) func(a, b []byte) F { return f }
+// Give Priority to strings that match from the beginning.
+func WrapTrimStart[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, prefix_l F, prefix_limit int) func(a A, b B) F {
+  if !(common.Abs(prefix_l) <= 1) { panic("prefix_l must be between -1 and 1") }
+  return func(a A, b B) F {
+    min_len := min(len(a), len(b))
+    pre := 0
+    for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
 
-func WrapTrim[F common.FloatType](f func(a, b []byte) F, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a, b []byte) F {
+    out := f(a[pre:], b[pre:])
+    return F(pre)*prefix_l/F(min_len) + out*F(min_len-pre)/F(min_len)
+  }
+}
+
+// Give Priority to strings that match from the end.
+func WrapTrimEnd[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, suffix_l F, suffix_limit int) func(a A, b B) F {
+  if !(common.Abs(suffix_l) <= 1) { panic("suffix_l must be between -1 and 1") }
+  return func(a A, b B) F {
+    min_len := min(len(a), len(b))
+    suf := 0
+    for suf != suffix_limit && suf < min(len(a), len(b)) && a[len(a)-1-suf] == b[len(b)-1-suf] { suf += 1 }
+
+    out := f(a[:len(a)-suf], b[:len(b)-suf])
+    return out*F(min_len-suf)/F(min_len) + F(suf)*suffix_l/F(min_len)
+  }
+}
+
+// Give Priority to strings that match from the beginning and / or the end.
+func WrapTrim[F common.FloatType, A common.StringLike, B common.StringLike](f func(a A, b B) F, prefix_l F, prefix_limit int, suffix_l F, suffix_limit int) func(a A, b B) F {
   if !(common.Abs(prefix_l) <= 1) { panic("prefix_l must be between -1 and 1") }
   if !(common.Abs(suffix_l) <= 1) { panic("suffix_l must be between -1 and 1") }
-  return func(a, b []byte) F {
+  return func(a A, b B) F {
     min_len := min(len(a), len(b))
     pre := 0
     for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
@@ -210,30 +234,6 @@ func WrapTrim[F common.FloatType](f func(a, b []byte) F, prefix_l F, prefix_limi
 
     out := f(a[:len(a)-suf], b[:len(b)-suf])
     return F(pre)*prefix_l/F(min_len) + out*F(min_len-(pre+suf))/F(min_len) + F(suf)*suffix_l/F(min_len)
-  }
-}
-
-func WrapTrimStart[F common.FloatType](f func(a, b []byte) F, prefix_l F, prefix_limit int) func(a, b []byte) F {
-  if !(common.Abs(prefix_l) <= 1) { panic("prefix_l must be between -1 and 1") }
-  return func(a, b []byte) F {
-    min_len := min(len(a), len(b))
-    pre := 0
-    for pre != prefix_limit && pre < min(len(a), len(b)) && a[pre] == b[pre] { pre += 1 }
-
-    out := f(a[pre:], b[pre:])
-    return F(pre)*prefix_l/F(min_len) + out*F(min_len-pre)/F(min_len)
-  }
-}
-
-func WrapTrimEnd[F common.FloatType](f func(a, b []byte) F, suffix_l F, suffix_limit int) func(a, b []byte) F {
-  if !(common.Abs(suffix_l) <= 1) { panic("suffix_l must be between -1 and 1") }
-  return func(a, b []byte) F {
-    min_len := min(len(a), len(b))
-    suf := 0
-    for suf != suffix_limit && suf < min(len(a), len(b)) && a[len(a)-1-suf] == b[len(b)-1-suf] { suf += 1 }
-
-    out := f(a[:len(a)-suf], b[:len(b)-suf])
-    return out*F(min_len-suf)/F(min_len) + F(suf)*suffix_l/F(min_len)
   }
 }
 
