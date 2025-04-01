@@ -16,12 +16,7 @@ func (lowercaseTransformer) Transform(dst, src []byte, atEOF bool) (nDst, nSrc i
     }
   }
 
-  if len(src) > len(dst) {
-    err = transform.ErrShortDst
-  } else if len(src) < len(dst) {
-    err = transform.ErrShortSrc
-  }
-
+  if atEOF && len(src) > len(dst) { err = transform.ErrShortDst }
   return
 }
 
