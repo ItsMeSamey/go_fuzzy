@@ -83,12 +83,12 @@ func main() {
   sorter := fuzzy.Sorter[float32, string, string]{Threshold: 0.8} 
 
   fmt.Println("Unsorted:", candidates)
-  // Note: `SortAny` for single key
+  // Note: `SortAny` for single key (using only name here)
   count := sorter.SortAny(fuzzy.ToSwapper(candidates, func(p Product) string { return p.Name }), target)
   fmt.Println("Sorted (and filtered):", candidates[:count])
   // output: [{appel Misspelling Corp Another misspelling of apple} {aple Misspelling Corp A misspelling of apple}]
 
-  // Note: `SortAnyArr` for multiple keys (best match is used)
+  // Note: `SortAnyArr` for multiple keys (Name, Company and Description are all used)
   count = sorter.SortAnyArr(fuzzy.ToSwapper(candidates, func(p Product) []string { return []string{p.Name, p.Company, p.Description} }), target)
   fmt.Println("Sorted (and filtered):", candidates[:count])
   // output: [{iphone Apple A smartphone} {appel Misspelling Corp Another misspelling of apple} {aple Misspelling Corp A misspelling of apple}]
